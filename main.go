@@ -91,11 +91,26 @@ func handleMessage(
 	case "textDocument/hover":
 		var request lsp.HoverRequest
 		if err := json.Unmarshal(contents, &request); err != nil {
-			logger.Printf("textDocument/didChange: %s", err)
+			logger.Printf("textDocument/hover: %s", err)
 			return
 		}
 
 		response := state.Hover(
+			request.ID,
+			request.Params.TextDocument.URI,
+			request.Params.Position,
+		)
+
+		writeResponse(writer, response)
+
+	case "textDocument/definition":
+		var request lsp.DefinitionRequest
+		if err := json.Unmarshal(contents, &request); err != nil {
+			logger.Printf("textDocument/definition: %s", err)
+			return
+		}
+
+		response := state.Definition(
 			request.ID,
 			request.Params.TextDocument.URI,
 			request.Params.Position,
