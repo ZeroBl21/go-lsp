@@ -103,17 +103,16 @@ func handleMessage(
 
 		writeResponse(writer, response)
 
-	case "textDocument/definition":
-		var request lsp.DefinitionRequest
+	case "textDocument/codeAction":
+		var request lsp.CodeActionRequest
 		if err := json.Unmarshal(contents, &request); err != nil {
-			logger.Printf("textDocument/definition: %s", err)
+			logger.Printf("textDocument/codeAction: %s", err)
 			return
 		}
 
-		response := state.Definition(
+		response := state.TextDocumentCodeAction(
 			request.ID,
 			request.Params.TextDocument.URI,
-			request.Params.Position,
 		)
 
 		writeResponse(writer, response)
